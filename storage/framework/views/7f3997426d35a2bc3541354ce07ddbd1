@@ -37,8 +37,6 @@
 <?php $__env->startSection('my-js'); ?>
 <script type="text/javascript">
 
-//获取二级目录
-
 _getCategory();
 
 $('.weui_select').change(function(event) {
@@ -70,7 +68,6 @@ function _getCategory() {
       }
       $('.weui_cells_access').html('');
       for(var i=0; i<data.categorys.length; i++) {
-		//定义路径
         var next = '/product/category_id/' + data.categorys[i].id;
         var node = '<a class="weui_cell" href="' + next + '">' +
                         '<div class="weui_cell_bd weui_cell_primary">' +
