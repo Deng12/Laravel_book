@@ -1,0 +1,4 @@
+邮箱验证<br/>
+
+<?php echo e($m3_email->content); ?>
+

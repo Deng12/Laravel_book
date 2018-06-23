@@ -1,0 +1,26 @@
+<?php $__env->startSection('title', '书籍列表'); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="weui_cells weui_cells_access">
+    <?php foreach($products as $product): ?>
+    <a class="weui_cell" href="/product/<?php echo e($product->id); ?>">
+        <div class="weui_cell_hd"><img class="bk_preview" src="<?php echo e($product->preview); ?>"></div>
+        <div class="weui_cell_bd weui_cell_primary">
+          <div style="margin-bottom: 10px;">
+            <span class="bk_title"><?php echo e($product->name); ?></span>
+            <span class="bk_price" style="float: right;">￥ <?php echo e($product->price); ?></span>
+          </div>
+
+            <p class="bk_summary"><?php echo e($product->summary); ?></p>
+        </div>
+        <div class="weui_cell_ft"></div>
+    </a>
+    <?php endforeach; ?>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('my-js'); ?>
+
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
