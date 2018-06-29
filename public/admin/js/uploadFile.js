@@ -1,4 +1,4 @@
-
+//上传文件
 function uploadFileToServer(fileElmId, type, id)
 {
 	$.ajaxFileUpload({
@@ -16,7 +16,7 @@ function uploadFileToServer(fileElmId, type, id)
 	});
 	return false;
 }
-
+//上传图片（文件input的id,类型,image的id）
 function uploadImageToServer(fileElmId, type, id)
 {
 	$("#"+id).attr("src", "/admin/images/loading_072.gif");
@@ -26,12 +26,17 @@ function uploadImageToServer(fileElmId, type, id)
 		dataType: 'text',
 		success: function (data)
 		{
-			var result = JSON.parse(data);
-			$("#"+id).attr("src", result.uri);
+			//var result = JSON.parse(data);
+			var len1 = data.indexOf("{");
+			var len2 = data.lastIndexOf("}");
+			var str3 = data.substring(len1+36,len2-1);
+			var reg  = /\\/g;
+			var str  = str3.replace(reg,'');
+			$("#"+id).attr("src", str);
 		},
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
-    }
+		error: function (XMLHttpRequest, textStatus, errorThrown) {
+		  //alert(errorThrown);
+		}
 	});
 	return false;
 }
@@ -147,6 +152,7 @@ jQuery.extend({
                             jQuery.event.trigger( "ajaxSuccess", [xml, s] );
                     } else
                         jQuery.handleError(s, xml, status);
+					
                 } catch(e)
 				{
                     status = "error";

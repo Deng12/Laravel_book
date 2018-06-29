@@ -15,13 +15,14 @@ use Mail;
 
 class MemberController extends Controller
 {
+  //提交注册，把相关数据保存到数据库中
   public function register(Request $request)
   {
-    $email = $request->input('email', '');
-    $phone = $request->input('phone', '');
-    $password = $request->input('password', '');
-    $confirm = $request->input('confirm', '');
-    $phone_code = $request->input('phone_code', '');
+    $email         = $request->input('email', '');
+    $phone	       = $request->input('phone', '');
+    $password      = $request->input('password', '');
+    $confirm       = $request->input('confirm', '');
+    $phone_code    = $request->input('phone_code', '');
     $validate_code = $request->input('validate_code', '');
 
     $m3_result = new M3Result;
@@ -54,15 +55,18 @@ class MemberController extends Controller
         $m3_result->message = '手机验证码为6位';
         return $m3_result->toJson();
       }
-
+	  
+	  //判断 “临时表的验证码” 跟 “传进来的验证码” 是否一致
       $tempPhone = TempPhone::where('phone', $phone)->first();
       if($tempPhone->code == $phone_code) {
+		//验证码有效期的判断
         if(time() > strtotime($tempPhone->deadline)) {
           $m3_result->status = 7;
-          $m3_result->message = '手机验证码不正确';
+          $m3_result->message = '手机验证码超时';
           return $m3_result->toJson();
         }
-
+		
+		//验证码正确，需要保存我们的会员信息
         $member = new Member;
         $member->phone = $phone;
         $member->password = md5('bk' . $password);
@@ -72,6 +76,7 @@ class MemberController extends Controller
         $m3_result->message = '注册成功';
         return $m3_result->toJson();
       } else {
+		//验证码不正确
         $m3_result->status = 7;
         $m3_result->message = '手机验证码不正确';
         return $m3_result->toJson();
@@ -86,6 +91,8 @@ class MemberController extends Controller
       }
 
       $validate_code_session = $request->session()->get('validate_code', '');
+
+	  //判断客户端的验证码与session保存的验证码是否一致
       if($validate_code_session != $validate_code) {
         $m3_result->status = 8;
         $m3_result->message = '验证码不正确';
@@ -96,7 +103,8 @@ class MemberController extends Controller
       $member->email = $email;
       $member->password = md5('bk' . $password);
       $member->save();
-
+      
+	  //生成唯一识别码
       $uuid = UUID::create();
 
       $m3_email = new M3Email;
@@ -125,13 +133,15 @@ class MemberController extends Controller
       return $m3_result->toJson();
     }
   }
-
+  
+  //登录的提交，并与数据库的数据进行验证
   public function login(Request $request) {
-    $username = $request->get('username', '');
-    $password = $request->get('password', '');
+   
+	$username      = $request->get('username', '');
+    $password      = $request->get('password', '');
     $validate_code = $request->get('validate_code', '');
 
-    $m3_result = new M3Result;
+    $m3_result     = new M3Result;
 
     // 校验
     // ....
@@ -143,26 +153,28 @@ class MemberController extends Controller
     //   $m3_result->message = '验证码不正确';
     //   return $m3_result->toJson();
     // }
-
+	
+	//根据传进来的 “手机号” “邮箱” 判断用户表是否已经有注册，是否有信息保存在了用户表中
     $member = null;
     if(strpos($username, '@') == true) {
       $member = Member::where('email', $username)->first();
     } else {
       $member = Member::where('phone', $username)->first();
     }
-
     if($member == null) {
       $m3_result->status = 2;
       $m3_result->message = '该用户不存在';
       return $m3_result->toJson();
     } else {
-      if(md5('bk' + $password) != $member->password) {
+	  //存在，则判断密码是否正确
+      if(md5('bk' . $password) != $member->password) {
         $m3_result->status = 3;
         $m3_result->message = '密码不正确';
         return $m3_result->toJson();
       }
     }
-
+	
+	//把成功登录的用户信息保存到session中
     $request->session()->put('member', $member);
 
     $m3_result->status = 0;

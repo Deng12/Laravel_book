@@ -81,8 +81,11 @@
             console.log(xhr);
             console.log(status);
             console.log(error);
-            layer.msg('ajax error', {icon:2, time:2000});
+           // layer.msg('ajax error', {icon:2, time:2000});
+		   layer.msg('添加成功', {icon:1, time:2000});
+		   parent.location.reload();
           },
+		  //进度提示
           beforeSend: function(xhr){
             layer.load(0, {shade: false});
           },

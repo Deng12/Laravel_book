@@ -10,6 +10,11 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+
+/**
+	视图类的一般使用get方式 调用接口的一般用post方式
+**/
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -23,6 +28,7 @@ Route::get('/product/{product_id}', 'View\BookController@toPdtContent');
 
 Route::get('/cart', 'View\CartController@toCart');
 
+//路由分组
 Route::group(['prefix' => 'service'], function () {
   Route::get('validate_code/create', 'Service\ValidateController@create');
   Route::post('validate_phone/send', 'Service\ValidateController@sendSMS');
@@ -47,6 +53,7 @@ Route::group(['prefix' => 'service'], function () {
   Route::post('pay/wx_notify', 'Service\PayController@wxNotify');
 });
 
+//Route::get('/order_commit/{product_id}', 'View\OrderController@toOrderCommit');
 
 Route::match(['get', 'post'], '/order_commit', 'View\OrderController@toOrderCommit')->middleware(['check.cart', 'check.weixin']);
 Route::get('/order_list', 'View\OrderController@toOrderList')->middleware(['check.login']);
@@ -91,5 +98,15 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::get('order', 'Admin\OrderController@toOrder');
     Route::get('order_edit', 'Admin\OrderController@toOrderEdit');
+
   });
+
+
+
+
+
+
+
+
+
 });

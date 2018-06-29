@@ -14,13 +14,15 @@ use App\Entity\Member;
 
 class ValidateController extends Controller
 {
+  //生成验证码
   public function create(Request $request)
   {
     $validateCode = new ValidateCode;
     $request->session()->put('validate_code', $validateCode->getCode());
     return $validateCode->doimg();
   }
-
+	
+  //发送短信
   public function sendSMS(Request $request)
   {
     $m3_result = new M3Result;
@@ -36,18 +38,30 @@ class ValidateController extends Controller
       $m3_result->message = '手机格式不正确';
       return $m3_result->toJson();
     }
+	
+	/**
+	    调用发送短信的接口
+		new SendTemplateSMS->sendTemplateSMS
+		(电话号码，（验证码，验证码持续的分钟数），模板参数);
+	**/
 
     $sendTemplateSMS = new SendTemplateSMS;
+
+	//随机生成6个数字的验证码
     $code = '';
     $charset = '1234567890';
     $_len = strlen($charset) - 1;
     for ($i = 0;$i < 6;++$i) {
         $code .= $charset[mt_rand(0, $_len)];
     }
+
     $m3_result = $sendTemplateSMS->sendTemplateSMS($phone, array($code, 60), 1);
+
     if($m3_result->status == 0) {
+	  //先查询这个号码有没被注册
       $tempPhone = TempPhone::where('phone', $phone)->first();
       if($tempPhone == null) {
+		//把验证码保存到临时表
         $tempPhone = new TempPhone;
       }
       $tempPhone->phone = $phone;

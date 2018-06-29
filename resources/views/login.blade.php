@@ -38,12 +38,12 @@
 
 @section('my-js')
 <script type="text/javascript">
-
-
+  //点击生成新的验证码
   $('.bk_validate_code').click(function () {
     $(this).attr('src', '/service/validate_code/create?random=' + Math.random());
   });
-
+  
+  //登录
   function onLoginClick() {
     // 帐号
     var username = $('input[name=username]').val();
@@ -53,7 +53,8 @@
       setTimeout(function() {$('.bk_toptips').hide();}, 2000);
       return;
     }
-    if(username.indexOf('@') == -1) { //手机号
+    if(username.indexOf('@') == -1) {
+	  //手机号判断
       if(username.length != 11 || username[0] != 1) {
         $('.bk_toptips').show();
         $('.bk_toptips span').html('帐号格式不对!');
@@ -61,6 +62,7 @@
         return;
       }
     } else {
+	  //邮箱号判断
       if(username.indexOf('.') == -1) {
         $('.bk_toptips').show();
         $('.bk_toptips span').html('帐号格式不对!');
@@ -120,9 +122,13 @@
         $('.bk_toptips').show();
         $('.bk_toptips span').html('登录成功');
         setTimeout(function() {$('.bk_toptips').hide();}, 2000);
-
-        //location.href = "{!!$return_url!!}";
-
+		
+		//登录成功后的跳转
+		if("{!!$return_url!!}"==""){
+			location.href = "/category";
+		}else{
+			location.href = "{!!$return_url!!}";
+		}
       },
       error: function(xhr, status, error) {
         console.log(xhr);

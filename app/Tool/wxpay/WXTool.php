@@ -6,6 +6,8 @@ use Cache;
 use App\Models\BKWXPayConfig;
 use Log;
 
+//微信支付必须签3次名，每次都不一样
+
 class WXTool {
 
   // JSSDK签名

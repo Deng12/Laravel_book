@@ -89,6 +89,7 @@
 
 <?php $__env->startSection('my-js'); ?>
 <script type="text/javascript">
+  //手机号注册，邮箱注册的 打勾的相互替换
   $('#x12').next().hide();
   $('input:radio[name=register_type]').click(function(event) {
     $('input:radio[name=register_type]').attr('checked', false);
@@ -112,14 +113,13 @@
 
 </script>
 <script type="text/javascript">
-  //是否允许发送短信
+  //短信发送时间的限制
   var enable = true;
   $('.bk_phone_code_send').click(function(event) {
     if(enable == false) {
       return;
     }
-	
-	//验证手机
+
     var phone = $('input[name=phone]').val();
     // 手机号不为空
     if(phone == '') {
@@ -139,35 +139,29 @@
     $(this).removeClass('bk_important');
     $(this).addClass('bk_summary');
 
-	//当点击第二次时，作为false
+	//一旦点击后，就要变为false,不让用户再次点击
     enable = false;
 
-	//定义多长时间第二次发送
+	//计时器（60秒后允许再次发送）
     var num = 60;
-
-	//倒计时器
     var interval = window.setInterval(function() {
-	  //还没到时的提示
       $('.bk_phone_code_send').html(--num + 's 重新发送');
       if(num == 0) {
+		//当为0时，允许计时器重新发送
         $('.bk_phone_code_send').removeClass('bk_summary');
         $('.bk_phone_code_send').addClass('bk_important');
-
-		//允许点击
         enable = true;
-
-		//计时器销毁
         window.clearInterval(interval);
         $('.bk_phone_code_send').html('重新发送');
       }
     }, 1000);
-	
-	//调用接口
+
     $.ajax({
       url: '/service/validate_phone/send',
+      type: 'POST',
       dataType: 'json',
       cache: false,
-      data: {phone: phone},
+      data: {phone: phone, _token: "<?php echo e(csrf_token()); ?>"},
       success: function(data) {
         if(data == null) {
           $('.bk_toptips').show();
@@ -225,8 +219,7 @@
             return;
           }
         }
-		
-		//以post提交请求一定要带上_token这个参数
+
         $.ajax({
           type: "POST",
           url: '/service/register',

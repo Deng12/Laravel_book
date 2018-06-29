@@ -70,7 +70,8 @@
       bullets[pos].className = 'cur';
     }
   });
-
+  
+  //加入购物车
   function _addCart() {
     var product_id = "{{$product->id}}";
     $.ajax({

@@ -23,7 +23,7 @@ class UploadController extends Controller {
 			return $m3_result->toJson();
 		}
 
-    $file_size = $_FILES["file"]["size"];
+        $file_size = $_FILES["file"]["size"];
 		if ( $file_size > 1024*1024) {
 			$m3_result->status = 2;
 			$m3_result->message = "请注意图片上传大小不能超过1M";
@@ -33,11 +33,13 @@ class UploadController extends Controller {
 		$public_dir = sprintf('/upload/%s/%s/', $type, date('Ymd') );
 		$upload_dir = public_path() . $public_dir;
 		if( !file_exists($upload_dir) ) {
-      mkdir($upload_dir, 0777, true);
-    }
+		  //可读可写
+		  mkdir($upload_dir, 0777, true);
+		}
 		// 获取文件扩展名
 		$arr_ext = explode('.', $_FILES["file"]['name']);
 		$file_ext = count($arr_ext) > 1 && strlen( end($arr_ext) ) ? end($arr_ext) : "unknow";
+
 		// 合成上传目标文件名
 		$upload_filename = UUID::create();
 		$upload_file_path = $upload_dir . $upload_filename . '.' . $file_ext;
@@ -52,9 +54,9 @@ class UploadController extends Controller {
 			{
 				$public_uri = $public_dir . $upload_filename . '.' . $file_ext;
 
-				$m3_result->status = 0;
+				$m3_result->status  = 0;
 				$m3_result->message = "上传成功";
-				$m3_result->uri = $public_uri;
+				$m3_result->uri     = $public_uri;
 			}
 			else
 			{
@@ -62,7 +64,6 @@ class UploadController extends Controller {
 				$m3_result->message = "上传失败, 权限不足";
 			}
 		}
-
 		return $m3_result->toJson();
 	 }
 }

@@ -16,18 +16,6 @@
 </div>
 
 <div class="weui_cells weui_cells_access">
-    <a class="weui_cell" href="javascript:;">
-        <div class="weui_cell_bd weui_cell_primary">
-            <p>cell standard</p>
-        </div>
-        <div class="weui_cell_ft">说明文字</div>
-    </a>
-    <a class="weui_cell" href="javascript:;">
-        <div class="weui_cell_bd weui_cell_primary">
-            <p>cell standard</p>
-        </div>
-        <div class="weui_cell_ft">说明文字</div>
-    </a>
 </div>
 
 
@@ -37,6 +25,8 @@
 <?php $__env->startSection('my-js'); ?>
 <script type="text/javascript">
 
+//书籍类别发生选项变更的时候，实现相应二级类别的显示
+
 _getCategory();
 
 $('.weui_select').change(function(event) {
@@ -44,6 +34,8 @@ $('.weui_select').change(function(event) {
 });
 
 function _getCategory() {
+
+  //获取选中的一级类别的值
   var parent_id = $('.weui_select option:selected').val();
   console.log('parent_id: ' + parent_id);
   $.ajax({

@@ -40,6 +40,7 @@ class CategoryController extends Controller
 
   /********************Service*********************/
   public function categoryAdd(Request $request) {
+	  //var_dump(1);exit;
     $name = $request->input('name', '');
     $category_no = $request->input('category_no', '');
     $parent_id = $request->input('parent_id', '');
@@ -57,7 +58,6 @@ class CategoryController extends Controller
     $m3_result = new M3Result;
     $m3_result->status = 0;
     $m3_result->message = '添加成功';
-
     return $m3_result->toJson();
   }
 

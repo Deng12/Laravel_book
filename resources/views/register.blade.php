@@ -91,7 +91,7 @@
 
 @section('my-js')
 <script type="text/javascript">
-
+  //手机号注册，邮箱注册的 打勾的相互替换
   $('#x12').next().hide();
   $('input:radio[name=register_type]').click(function(event) {
     $('input:radio[name=register_type]').attr('checked', false);
@@ -108,13 +108,15 @@
       $('.weui_cells_form').eq(0).hide();
     }
   });
-
+  
+  //点击验证码更新
   $('.bk_validate_code').click(function () {
     $(this).attr('src', '/service/validate_code/create?random=' + Math.random());
   });
 
 </script>
 <script type="text/javascript">
+  //短信发送时间的限制
   var enable = true;
   $('.bk_phone_code_send').click(function(event) {
     if(enable == false) {
@@ -139,11 +141,16 @@
 
     $(this).removeClass('bk_important');
     $(this).addClass('bk_summary');
+
+	//一旦点击后，就要变为false,不让用户再次点击
     enable = false;
+
+	//计时器（60秒后允许再次发送）
     var num = 60;
     var interval = window.setInterval(function() {
       $('.bk_phone_code_send').html(--num + 's 重新发送');
       if(num == 0) {
+		//当为0时，允许计时器重新发送
         $('.bk_phone_code_send').removeClass('bk_summary');
         $('.bk_phone_code_send').addClass('bk_important');
         enable = true;
@@ -185,7 +192,8 @@
   });
 </script>
 <script type="text/javascript">
-
+  
+  //提交注册的内容，并且保存到数据库中
   function onRegisterClick() {
 
     $('input:radio[name=register_type]').each(function(index, el) {
@@ -250,7 +258,8 @@
       }
     });
   }
-
+  
+  //使用手机注册提交的验证
   function verifyPhone(phone, password, confirm, phone_code) {
     // 手机号不为空
     if(phone == '') {
@@ -298,7 +307,7 @@
     }
     return true;
   }
-
+  //使用邮箱注册提交的验证
   function verifyEmail(email, password, confirm, validate_code) {
     // 邮箱不为空
     if(email == '') {
